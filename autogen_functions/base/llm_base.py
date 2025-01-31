@@ -16,17 +16,16 @@ class ConfigurationError(Exception):
     pass
 
 class LLMBaseFunction:
-    # 初期化: モデル設定とエージェントの読み込み
-    def __init__(self, model_name: str = "gpt-3.5-turbo"):
-        self.config_list = {
+    def __init__(self, model_name: str = "gpt-4"):
+        self.config_list = [{
             "model": model_name,
             "api_key": os.environ["OPENAI_API_KEY"]
-        }
+        }]
         
-        # 継承先のクラスのディレクトリからagentsフォルダを参照
-        current_dir = os.path.dirname(os.path.abspath(inspect.getmodule(self).__file__))
-        config_path = os.path.join(current_dir, 'agents/user_proxy_config.json')
-        self.user_proxy = self._create_user_proxy(config_path)
+        # Updated UserProxyAgent configuration
+        self.user_proxy = UserProxyAgent(
+            name="user_proxy"
+        )
         self.assistants = self._load_assistant_configs()
 
     # UserProxyAgentの作成: ユーザー代理として動作するエージェントを設定
