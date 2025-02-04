@@ -24,7 +24,7 @@ class CodeGeneratorFunction(LLMBaseFunction):
                 current_block = []
                 
                 for line in lines:
-                    if line.strip().startswith('```python'):
+                    if line.strip().startswith('```'):
                         if in_code_block:
                             # コードブロックの終了を検出したら、現在のブロックを保存
                             code_blocks.append('\n'.join(current_block))
@@ -42,4 +42,4 @@ class CodeGeneratorFunction(LLMBaseFunction):
             return self.conversation_result.chat_history[-1]['content']
 
         except Exception as e:
-            return f"コード生成中にエラーが発生しました: {str(e)}"         
+            return f"コード生成中にエラーが発生しました: {str(e)}"

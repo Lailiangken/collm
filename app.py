@@ -13,45 +13,36 @@ load_dotenv()
 
 
 def save_generated_result(result: str, query: str, chat_history: list, function_type: str, file_extension: str = "py") -> str:
-    """
-    生成結果を保存する汎用的な関数
-    
-    Args:
-        result: 生成された結果（コードやテキストなど）
-        query: ユーザーからの入力クエリ
-        chat_history: エージェント間の会話履歴
-        function_type: 機能の種類（'code_generator', 'code_review'など）
-        file_extension: 保存するファイルの拡張子（デフォルト: py）
-    
-    Returns:
-        str: 保存されたファイルのパス
-    """
+    # タイムスタンプベースのディレクトリ名を生成
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    sanitized_query = "".join(c for c in query[:30] if c.isalnum() or c in (' ', '_')).strip()
     
-    # 機能タイプごとのフォルダを作成
-    output_dir = Path(f"output/{function_type}/{timestamp}_{sanitized_query}")
+    # クエリ文字列のサニタイズ処理を強化
+    sanitized_query = "".join(c for c in query[:30] if c.isalnum() or c in (' ', '_')).rstrip()
+    
+    # 出力ディレクトリのパスを生成
+    root_dir = Path("output")
+    output_dir = root_dir / function_type / f"{timestamp}_{sanitized_query}"
+    
+    # ディレクトリが存在しない場合は作成
     output_dir.mkdir(parents=True, exist_ok=True)
     
-    # 結果の保存
-    output_file = output_dir / f"generated_result.{file_extension}"
-    with open(output_file, "w") as f:
-        f.write(result)
+    # 結果ファイルの保存
+    result_file = output_dir / f"generated_result.{file_extension}"
+    result_file.write_text(result, encoding='utf-8')
     
     # クエリの保存
     query_file = output_dir / "query.txt"
-    with open(query_file, "w") as f:
-        f.write(query)
+    query_file.write_text(query, encoding='utf-8')
     
-    # 会話履歴の保存
+    # 会話履歴の保存を構造化
     chat_file = output_dir / "conversation.txt"
-    with open(chat_file, "w") as f:
+    with chat_file.open('w', encoding='utf-8') as f:
         for message in chat_history:
             f.write(f"Role: {message.get('role', 'unknown')}\n")
             f.write(f"Content:\n{message.get('content', '')}\n")
             f.write("-" * 80 + "\n")
     
-    return str(output_file)
+    return str(result_file)
 
 def get_function_parameters(function_class):
     """クラスの__call__メソッドのパラメータ情報を取得"""

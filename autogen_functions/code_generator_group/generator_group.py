@@ -1,5 +1,5 @@
 from ..base.llm_base import LLMBaseFunction
-import autogen_agentchat as autogen
+import autogen
 
 class GroupChatGenerator(LLMBaseFunction):
     def __init__(self, model_name: str = "gpt-3.5-turbo"):

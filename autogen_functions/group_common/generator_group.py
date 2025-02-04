@@ -1,9 +1,9 @@
 from ..base.llm_base import LLMBaseFunction
-import autogen_agentchat as autogen
+import autogen
 import os
 
 class CommonGroupChatGenerator(LLMBaseFunction):
-    def __init__(self, model_name: str = "o1-mini-2024-09-12"):
+    def __init__(self, model_name: str = "gpt-4"):
         super().__init__(model_name)
         # グループチャットの設定
         # GPT-4の設定を正しく構築

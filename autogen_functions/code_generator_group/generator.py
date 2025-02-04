@@ -1,5 +1,5 @@
 from ..base.llm_base import LLMBaseFunction
-import autogen.agentchat
+import autogen
 import os
 
 class GroupChatGenerator(LLMBaseFunction):

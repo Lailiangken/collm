@@ -4,8 +4,8 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile
-    image: collm-app
-    container_name: collm-app
+    image: collm-app02
+    container_name: collm-app02
     ports:
       - "8501:8501"
       - "8081:8081"
@@ -14,3 +14,5 @@ services:
     environment:
       - STREAMLIT_SERVER_ADDRESS=0.0.0.0
     command: streamlit run app.py --server.address=0.0.0.0
+    volumes:
+      - .:/app

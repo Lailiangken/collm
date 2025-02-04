@@ -2,10 +2,8 @@ import os
 import json
 from typing import Dict
 from pathlib import Path
-from autogen_agentchat.agents import UserProxyAgent, AssistantAgent
 import inspect
-
-# 必須パラメータの定義
+from autogen import UserProxyAgent, AssistantAgent# 必須パラメータの定義
 REQUIRED_PARAMS = {
     'user_proxy': {'name', 'system_message', 'human_input_mode'},
     'assistant': {'name', 'system_message', 'human_input_mode'}
@@ -17,15 +15,17 @@ class ConfigurationError(Exception):
 
 class LLMBaseFunction:
     def __init__(self, model_name: str = "gpt-4"):
-        self.config_list = [{
-            "model": model_name,
-            "api_key": os.environ["OPENAI_API_KEY"]
-        }]
+        self.config_list = {
+            "config_list": [{
+                "model": model_name,
+                "api_key": os.environ["OPENAI_API_KEY"]
+            }]
+        }
         
-        # Updated UserProxyAgent configuration
-        self.user_proxy = UserProxyAgent(
-            name="user_proxy"
-        )
+        # UserProxyAgentの設定を正しく読み込む
+        current_dir = os.path.dirname(os.path.abspath(inspect.getmodule(self).__file__))
+        user_proxy_config_path = os.path.join(current_dir, 'agents', 'user_proxy_config.json')
+        self.user_proxy = self._create_user_proxy(user_proxy_config_path)
         self.assistants = self._load_assistant_configs()
 
     # UserProxyAgentの作成: ユーザー代理として動作するエージェントを設定
